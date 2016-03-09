@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {render} from 'react-dom';
 import {createStore} from 'redux';
 import {Provider, connect} from 'react-redux';
+import {fromJS} from 'immutable';
 import $ from 'jquery';
 import _ from 'lodash';
 import 'scss/main.scss';
@@ -9,13 +10,11 @@ import 'scss/main.scss';
 const GREETINGS = ["Hello", "Hi", "Greetings", "A heartfelt welcome", "Salutations"];
 
 // Redux Store
-var initialState = {greeting: 0};
+var initialState = fromJS({greeting: 0});
 function reducer(state = initialState, action) {
   switch(action.type) {
     case 'nextGreeting':
-      var newGreeting = (state.greeting + 1) % GREETINGS.length;
-      var newState = Object.assign({}, state, {greeting: newGreeting});
-      return newState;
+      return state.update('greeting', (g) => (g+1) % GREETINGS.length);
     default:
       return state;
   }
@@ -32,7 +31,7 @@ class Greeting extends Component {
   render() {
     return (
       <div>
-        <h3>{GREETINGS[this.props.greeting]} from <em>Redux</em>.</h3>
+        <h3>{GREETINGS[this.props.greeting]} from <em>Redux</em> with <em>Immutable</em>.</h3>
         <button onClick={this.props.nextGreeting}>Next!</button>
       </div>
     );
@@ -41,8 +40,7 @@ class Greeting extends Component {
 
 // React-Redux
 function mapStateToProps(state) {
-  let {greeting} = state;
-  return {greeting};
+  return {greeting: state.get('greeting')};
 }
 var GreetingC = connect(mapStateToProps, actions)(Greeting);
 
@@ -54,4 +52,10 @@ $(() => {
     </Provider>
   );
   render(main, $('#content')[0])
+});
+
+
+// Testing
+$.ajax("http://localhost:3000/api/article/Poland", {contentType: 'text'}).then((data) => {
+  $('#wiki').html(data);
 });

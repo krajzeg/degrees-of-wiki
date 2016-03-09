@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "A simple Wikipedia-based game of connecting two concepts together.",
   "scripts": {
-    "front": "node_modules/.bin/webpack --progress --colors --watch",
-    "server": "node bin/www",
+    "front": "webpack --progress --colors --watch",
+    "server": "nodemon --watch src --exec babel-node bin/www",
     "start": "npm run server"
   },
   "author": "Jakub Wasilewski <wasyl@wasyl.eu>",
@@ -21,9 +21,14 @@
     "webpack": "^1.12.14"
   },
   "dependencies": {
+    "babel-cli": "^6.6.5",
     "express": "^4.13.4",
+    "good-guy-http": "^1.7.0",
+    "immutable": "^3.7.6",
     "jquery": "^2.2.1",
     "lodash": "^4.6.1",
+    "morgan": "^1.7.0",
+    "nodemon": "^1.9.1",
     "normalize.css": "^3.0.3",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
