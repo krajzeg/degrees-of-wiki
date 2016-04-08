@@ -1,13 +1,13 @@
 import _ from 'lodash';
 
 export const promiseMiddleware = store => next => action => {
-  const {type, promiseCall} = action
-  if (!promiseCall) {
+  const {type, promise} = action
+  if (!promise) {
     return next(action)
   }
 
   store.dispatch(partialAction(action, 'STARTED'));
-  promiseCall()
+  promise()
     .then(result => {
       store.dispatch(partialAction(action, 'RESOLVED', {result}));
     }, error => {
@@ -17,7 +17,7 @@ export const promiseMiddleware = store => next => action => {
 
 function partialAction(original, typeSuffix, newProperties = {}) {
   return _.extend({},
-    _.omit(original, 'promiseCall'),
+    _.omit(original, 'promise'),
     {type: `${original.type}_${typeSuffix}`},
     newProperties
   );

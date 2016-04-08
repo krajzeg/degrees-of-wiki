@@ -10,23 +10,19 @@ import 'scss/main.scss';
 import {promiseMiddleware} from './middleware/promise-middleware'
 import Entry from './components/Entry'
 
-
 // Redux Store
-const initialState = fromJS({
-  entry: {
-    title: "Poland"
-  }
-});
+const initialState = fromJS({});
 
 function reducer(state = initialState, action) {
   console.log(action);
   switch(action.type) {
+    case 'ENTRY_LOAD_STARTED':
+      return state.set('entry', fromJS({title: action.title}));
     case 'ENTRY_LOAD_RESOLVED':
       return state.setIn(['entry', 'html'], action.result);
     case 'ENTRY_LOAD_FAILED':
+      console.error(action.error);
       return state;
-    case 'ENTRY_REPLACE':
-      return state.set('entry', fromJS({title: action.title}));
     default:
       return state;
   }
@@ -46,13 +42,9 @@ function loadHTMLFor(entryTitle) {
 const actions = {
   loadEntry(title) {
     return {
-      type: 'ENTRY_LOAD',
-      target: title,
-      promiseCall: () => loadHTMLFor(title),
-    }
-  },
-  replaceEntry(title) {
-    return {type: 'ENTRY_REPLACE', title};
+      type: 'ENTRY_LOAD', title,
+      promise: () => loadHTMLFor(title),
+    };
   }
 };
 
@@ -61,7 +53,7 @@ class Main extends Component {
   render() {
     return (
       <div>
-        <Entry entry={this.props.entry} loadEntry={this.props.loadEntry} replaceEntry={this.props.replaceEntry}/>
+        {this.props.entry ? <Entry entry={this.props.entry} loadEntry={this.props.loadEntry} replaceEntry={this.props.replaceEntry}/> : null}
       </div>
     );
   }
@@ -81,7 +73,5 @@ $(() => {
     </Provider>
   );
   render(view, $('#content')[0])
-
-  const initialTitle = store.getState().getIn(['entry', 'title']);
-  store.dispatch(actions.loadEntry(initialTitle));
+  store.dispatch(actions.loadEntry('Poland'));
 });
