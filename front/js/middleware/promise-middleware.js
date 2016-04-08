@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export const promiseMiddleware = store => next => action => {
+export default (store) => (next) => (action) => {
   const {type, promise} = action
   if (!promise) {
     return next(action)

@@ -2,20 +2,17 @@ import React, {Component} from 'react';
 import {render} from 'react-dom';
 import {createStore, applyMiddleware, compose} from 'redux';
 import {Provider, connect} from 'react-redux';
-import {fromJS} from 'immutable';
 import $ from 'jquery';
 import _ from 'lodash';
 import 'scss/main.scss';
 
-import {promiseMiddleware} from './middleware/promise-middleware';
-import {Api} from './api';
-import {mainReducer} from './reducers/main-reducer';
-import Entry from './components/Entry';
-
 // API
+import Api from './api';
 const api = new Api(`${window.location.protocol}//${window.location.host}/api`);
 
 // Redux Store
+import mainReducer from './reducers/main-reducer';
+import promiseMiddleware from './middleware/promise-middleware';
 let store = createStore(
   mainReducer,
   compose(
@@ -25,16 +22,13 @@ let store = createStore(
 );
 
 // Redux Actions
-const actions = {
-  loadEntry(title) {
-    return {
-      type: 'ENTRY_LOAD', title,
-      promise: () => api.loadPageHTML(title),
-    };
-  }
-};
+import entryActions from './actions/entry-actions';
+const actions = _.extend({},
+  entryActions(api)
+);
 
 // React
+import Entry from './components/Entry';
 class Main extends Component {
   render() {
     return (
@@ -47,7 +41,7 @@ class Main extends Component {
 
 // React-Redux
 function mapStateToProps(state) {
-  return {entry: state.get('entry')};
+  return state.toObject();
 }
 var MainC = connect(mapStateToProps, actions)(Main);
 
@@ -59,5 +53,9 @@ $(() => {
     </Provider>
   );
   render(view, $('#content')[0])
+});
+
+// Startup
+$(() => {
   store.dispatch(actions.loadEntry('Poland'));
 });

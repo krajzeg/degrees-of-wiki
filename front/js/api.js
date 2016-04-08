@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-export class Api {
+export default class Api {
   constructor(apiRoot) {
     if (apiRoot.endsWith('/'))
       apiRoot = apiRoot.substring(apiRoot.length-1);
