@@ -54,7 +54,10 @@ function wikipediaRoute(cfg) {
     // replace non-page links with just their text (external links, IPA links, Help: links, etc.)
     $('a').toArray().forEach((a) => {
       const $a = $(a), href = $a.attr('href');
-      const needsReplacing = (!href.startsWith('/wiki')) || href.includes(':');
+      const needsReplacing = !href.startsWith('/wiki') ||
+        href.includes(':') ||
+        href.includes('List_of_');
+
       if (needsReplacing) {
         // replace with an inert <span>, keep the text intact
         $(a).replaceWith($('<span>').text($a.text()));
@@ -121,7 +124,5 @@ function wikipediaRoute(cfg) {
       qs: queryParams
     };
   }
-  
+
 }
-
-
