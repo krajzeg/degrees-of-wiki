@@ -1,23 +1,24 @@
 import _ from 'lodash';
 import express from 'express';
+import cheerio from 'cheerio';
 
 module.exports = wikipediaRoute;
 
 function wikipediaRoute(cfg) {
 
-  var goodGuyJson = cfg.goodGuy.reconfigure({
+  var wikiGoodGuy = cfg.goodGuy.reconfigure({
     postprocess: parseWikipediaResponse,
     timeout: 5000
   });
 
   var route = express();
-  route.get('/:title', fetchArticleHandler);
+  route.get('/:page', fetchArticleHandler);
   return route;
 
   // ==================================================
 
   function fetchArticleHandler(req, res, next) {
-    fetchWikipediaContent(req.params.title).then(function(content) {
+    fetchWikipediaContent(req.params.page).then(function(content) {
       res
         .status(200)
         .set({
@@ -27,91 +28,76 @@ function wikipediaRoute(cfg) {
     }).catch(next);
   }
 
-  function fetchWikipediaContent(title) {
-    return Promise.all([getIntroExtract(title), getLinksInText(title)])
-      .then(([extract, links]) => {
-        return mergeLinksIntoExtract(extract, links);
+  function fetchWikipediaContent(pageId) {
+    return getWikipediaHTML(pageId)
+      .then(function(html) {
+        var $ = cheerio.load(html);
+        $ = cleanUpWikiContent($);
+        return $.html($.root());
       });
   }
 
-  function getIntroExtract(pageTitle) {
-    return goodGuyJson(extractRequestForPage(pageTitle))
-      .then((json) => {
-        if (!(json && json.query && json.query.pages))
-          throw new Error("Unable to parse Wikipedia API reponse - no json.query.pages");
+  function cleanUpWikiContent($) {
+    // remove all non-paragraphs from the top level (various tables, notes, etc.)
+    $.root().children(':not(p,ul)').remove();
 
-        // we're expecting only one key under here, so we just take the first
-        var jsonPages = json.query.pages;
-        return jsonPages[_.keys(jsonPages)[0]].extract;
-      });
-  }
+    // remove all tags which we know we're not interested in
+    const uninteresting = [
+      ".reference",                        // no references needed
+      ".error",                            // Wikipedia sometimes spits errors out, don't want those
+      "img",                               // any leftover images are not really wanted
+      ".metadata",                         // 'listen' links are often embedded in those
+      "span#coordinates"                   // this is a special "geo" widget that uses a <p> wrapper
+    ];
+    uninteresting.forEach((selector) => $(selector).remove());
 
-  function getLinksInText(pageTitle) {
-    return goodGuyJson(wikiTextRequestForPage(pageTitle))
-      .then((json) => {
-        if (!(json && json.parse && json.parse.wikitext && json.parse.wikitext['*'])) {
-          throw new Error("Unable to parse Wikipedia API response - no json.parse.wikitext.* field.");
-        }
-        var wikiText = json.parse.wikitext['*'];
-        return parseInternalWikiLinks(wikiText);
-      });
-  }
-
-  function mergeLinksIntoExtract(extract, links) {
-    // sorting the links by length, descending makes sure longer link text takes priority
-    links = _.sortBy(links, (l) => -l.linkText.length);
-
-    // replace first occurence of each link text in the extract with an actual link
-    links.forEach(({pageName, linkText}) => {
-      extract = extract.replace(new RegExp("(\\s|>)" + linkText + "(\\s|<)"), `$1<a href="wikipage:${pageName}">${linkText}</a>$2`);
-    });
-    return extract;
-  }
-
-  function parseInternalWikiLinks(wikiText) {
-    // captures [[Page name]] and [[Page name|Link text]] format links
-    var WIKI_LINK_REGEX = /\[\[([^\]|]+)(\|(.+?))?\]\]/g;
-
-    // .replace() is a hacky but easy way to iterate over all matches with groups
-    // I wish regexes implemented .map() in ES6
-    var links = [];
-    wikiText.replace(WIKI_LINK_REGEX, (__, pageName, ___, linkText) => {
-      // some links are internal Wiki details, and we ignore them
-      if (linkShouldBeIncluded(pageName)) {
-        links.push({pageName, linkText: linkText || pageName});
+    // replace non-page links with just their text (external links, IPA links, Help: links, etc.)
+    $('a').toArray().forEach((a) => {
+      const $a = $(a), href = $a.attr('href');
+      const needsReplacing = (!href.startsWith('/wiki')) || href.includes(':');
+      if (needsReplacing) {
+        // replace with an inert <span>, keep the text intact
+        $(a).replaceWith($('<span>').text($a.text()));
       }
     });
-    return links;
-  }
 
-  function linkShouldBeIncluded(pageName) {
-    if (pageName.includes(':')) return false;
-    if (pageName.startsWith('List of ')) return false;
-    if (pageName.startsWith('#')) return false;
-    if (pageName.startsWith('.')) return false;
-
-    return true;
-  }
-
-  function extractRequestForPage(pageTitle) {
-    return wikiApiRequest({
-      action: 'query',
-      prop: 'extracts',
-      format: 'json',
-      exintro: 'true',
-      redirects: 'true',
-      titles: pageTitle
+    // tweak remaining page links to be 100% predictable
+    $('a[href^="/wiki"]').toArray().forEach((a) => {
+      const $a = $(a), href = $(a).attr('href');
+      const newHref = href.replace('/wiki/', 'page://').replace(/#.*$/, '');
+      $a.replaceWith($("<a>").attr('href', newHref).text($a.text()));
     });
+
+    // remove anything that is empty after those operations
+    // (repeatedly, since this might cause other tags to become empty)
+    var $empty = $(':empty');
+    while ($empty.length) {
+      $empty.remove();
+      $empty = $(':empty');
+    }
+
+    // done!
+    return $;
   }
 
-  function wikiTextRequestForPage(pageTitle) {
+  function getWikipediaHTML(pageId) {
+    return wikiGoodGuy(wikiRequestHtmlForPage(pageId))
+      .then((json) => {
+        if (!(json && json.parse && json.parse.text && json.parse.text['*'])) {
+          throw new Error("Unable to parse Wikipedia response, no json.parse.text.* present.");
+        }
+        return json.parse.text['*'];
+      });
+  }
+
+  function wikiRequestHtmlForPage(pageId) {
     return wikiApiRequest({
-      page: pageTitle,
       action: 'parse',
       format: 'json',
-      prop: 'wikitext',
-      redirects: true,
+      prop: 'text',
+      page: pageId,
       section: 0,
+      redirects: true,
       disabletoc: true
     });
   }

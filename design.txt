@@ -1,0 +1,25 @@
+{
+  riddle: {
+    startingFrom: 'Thomas Alva Edison',
+    getTo: 'Pikachu',
+
+    path: { ['entries', 'Thomas Alva Edison'], ...
+    }
+  },
+
+  entries: [
+    'Thomas Alva Edison': { name: "Thomas Alva Edison", html: "<...>", links: ['People from the United States', 'Inventor', ...]},
+    'Power Station': { name: "Power station", html: "<...>", links: ... }
+  ]
+}
+
+
+ACTIONS:
+  degrees/startNewRiddle ( {from: to: })
+
+  riddle/start ( {what: 'riddle', from: '...', to: '...'})
+
+  path/backtrack ( {what: ['riddle', 'path'], to: 'Thomas Alva Edison'} )
+  path/drillDown ( {what: ['riddle', 'path'], to: 'Cable'})
+
+  entry/showWikiHTML ( {what: ['entries', 'Thomas Alva Edison'], <...>} )
