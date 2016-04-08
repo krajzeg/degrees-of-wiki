@@ -8,7 +8,11 @@ import _ from 'lodash';
 import 'scss/main.scss';
 
 import {promiseMiddleware} from './middleware/promise-middleware'
+import {Api} from './api';
 import Entry from './components/Entry'
+
+// API
+const api = new Api(`${window.location.protocol}//${window.location.host}/api`);
 
 // Redux Store
 const initialState = fromJS({});
@@ -33,17 +37,11 @@ let store = window.store = createStore(
 );
 
 // Redux Actions
-function loadHTMLFor(entryTitle) {
-  return $.ajax(`http://localhost:3000/api/article/${entryTitle}`, {
-    contentType: 'text'
-  });
-}
-
 const actions = {
   loadEntry(title) {
     return {
       type: 'ENTRY_LOAD', title,
-      promise: () => loadHTMLFor(title),
+      promise: () => api.loadPageHTML(title),
     };
   }
 };
