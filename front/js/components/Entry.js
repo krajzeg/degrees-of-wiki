@@ -27,7 +27,6 @@ export default class Entry extends Component {
     if ($target.is('a[href^="page://"]')) {
       // It was - we trigger a Redux action to replace the entry with a new one
       const targetPage = $target.attr('href').replace('page://', '');
-      this.props.replaceEntry(targetPage);
       this.props.loadEntry(targetPage);
 
       return false;

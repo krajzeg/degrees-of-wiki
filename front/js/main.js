@@ -1,39 +1,27 @@
 import React, {Component} from 'react';
 import {render} from 'react-dom';
-import {createStore, applyMiddleware} from 'redux';
+import {createStore, applyMiddleware, compose} from 'redux';
 import {Provider, connect} from 'react-redux';
 import {fromJS} from 'immutable';
 import $ from 'jquery';
 import _ from 'lodash';
 import 'scss/main.scss';
 
-import {promiseMiddleware} from './middleware/promise-middleware'
+import {promiseMiddleware} from './middleware/promise-middleware';
 import {Api} from './api';
-import Entry from './components/Entry'
+import {mainReducer} from './reducers/main-reducer';
+import Entry from './components/Entry';
 
 // API
 const api = new Api(`${window.location.protocol}//${window.location.host}/api`);
 
 // Redux Store
-const initialState = fromJS({});
-
-function reducer(state = initialState, action) {
-  console.log(action);
-  switch(action.type) {
-    case 'ENTRY_LOAD_STARTED':
-      return state.set('entry', fromJS({title: action.title}));
-    case 'ENTRY_LOAD_RESOLVED':
-      return state.setIn(['entry', 'html'], action.result);
-    case 'ENTRY_LOAD_FAILED':
-      console.error(action.error);
-      return state;
-    default:
-      return state;
-  }
-}
-let store = window.store = createStore(
-  reducer,
-  applyMiddleware(promiseMiddleware)
+let store = createStore(
+  mainReducer,
+  compose(
+    applyMiddleware(promiseMiddleware),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+  )
 );
 
 // Redux Actions
