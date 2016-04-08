@@ -22,18 +22,18 @@ let store = createStore(
 );
 
 // Redux Actions
-import entryActions from './actions/entry-actions';
+import pageActions from './actions/page-actions';
 const actions = _.extend({},
-  entryActions(api)
+  pageActions(api)
 );
 
 // React
-import Entry from './components/Entry';
+import Page from './components/Page';
 class Main extends Component {
   render() {
     return (
       <div>
-        {this.props.entry ? <Entry entry={this.props.entry} loadEntry={this.props.loadEntry} replaceEntry={this.props.replaceEntry}/> : null}
+        {this.props.page ? <Page page={this.props.page} loadPage={this.props.loadPage} replacePage={this.props.replacePage}/> : null}
       </div>
     );
   }
@@ -57,5 +57,5 @@ $(() => {
 
 // Startup
 $(() => {
-  store.dispatch(actions.loadEntry('Poland'));
+  store.dispatch(actions.loadPage('Poland'));
 });

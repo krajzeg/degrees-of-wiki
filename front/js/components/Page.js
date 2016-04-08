@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import React, { Component } from 'react';
 
-export default class Entry extends Component {
+export default class Page extends Component {
   constructor() {
     super();
     this.handleClicks = this.handleClicks.bind(this);
@@ -9,15 +9,15 @@ export default class Entry extends Component {
 
   render() {
     return (
-      <div className="entry">
-        <header>{this.props.entry.get('title')}</header>
-        <div className="entry-body" dangerouslySetInnerHTML={this.entryHTML()} onClick={this.handleClicks}/>
+      <div className="page">
+        <header>{this.props.page.get('title')}</header>
+        <div className="page-body" dangerouslySetInnerHTML={this.pageHTML()} onClick={this.handleClicks}/>
       </div>
     );
   }
 
-  entryHTML() {
-    return {__html: this.props.entry.get('html')};
+  pageHTML() {
+    return {__html: this.props.page.get('html')};
   }
 
   handleClicks(evt) {
@@ -25,9 +25,9 @@ export default class Entry extends Component {
     // if the original target was a link to another page
     const $target = $(evt.target);
     if ($target.is('a[href^="page://"]')) {
-      // It was - we trigger a Redux action to replace the entry with a new one
+      // It was - we trigger a Redux action to replace the page with a new one
       const targetPage = $target.attr('href').replace('page://', '');
-      this.props.loadEntry(targetPage);
+      this.props.loadPage(targetPage);
 
       return false;
     }
