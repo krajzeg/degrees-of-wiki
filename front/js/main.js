@@ -1,38 +1,64 @@
 import React, {Component} from 'react';
 import {render} from 'react-dom';
-import {createStore} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
 import {Provider, connect} from 'react-redux';
 import {fromJS} from 'immutable';
 import $ from 'jquery';
 import _ from 'lodash';
 import 'scss/main.scss';
 
-const GREETINGS = ["Hello", "Hi", "Greetings", "A heartfelt welcome", "Salutations"];
+import {promiseMiddleware} from './middleware/promise-middleware'
+import Entry from './components/Entry'
+
 
 // Redux Store
-var initialState = fromJS({greeting: 0});
+const initialState = fromJS({
+  entry: {
+    title: "Poland",
+    html: "<b>Poland</b> is a country."
+  }
+});
+
 function reducer(state = initialState, action) {
+  console.log(action);
   switch(action.type) {
-    case 'nextGreeting':
-      return state.update('greeting', (g) => (g+1) % GREETINGS.length);
+    case 'ENTRY_LOAD_RESOLVED':
+      return state.setIn(['entry', 'html'], action.result);
+    case 'ENTRY_LOAD_FAILED':
+      console.error(action.error);
+      return state;
     default:
       return state;
   }
 }
-var store = createStore(reducer);
+let store = window.store = createStore(
+  reducer,
+  applyMiddleware(promiseMiddleware)
+);
 
 // Redux Actions
-var actions = {
-  nextGreeting() { return {type: "nextGreeting"}; }
+function loadHTMLFor(entryTitle) {
+  return $.ajax(`http://localhost:3000/api/article/${entryTitle}`, {
+    contentType: 'text'
+  });
+}
+
+const actions = {
+  loadEntry(entry) {
+    return {
+      type: 'ENTRY_LOAD',
+      target: entry.get('title'),
+      promiseCall: () => loadHTMLFor(entry.get('title')),
+    }
+  }
 };
 
 // React
-class Greeting extends Component {
+class Main extends Component {
   render() {
     return (
       <div>
-        <h3>{GREETINGS[this.props.greeting]} from <em>Redux</em> with <em>Immutable</em>.</h3>
-        <button onClick={this.props.nextGreeting}>Next!</button>
+        <Entry entry={this.props.entry}/>
       </div>
     );
   }
@@ -40,22 +66,18 @@ class Greeting extends Component {
 
 // React-Redux
 function mapStateToProps(state) {
-  return {greeting: state.get('greeting')};
+  return {entry: state.get('entry')};
 }
-var GreetingC = connect(mapStateToProps, actions)(Greeting);
+var MainC = connect(mapStateToProps, actions)(Main);
 
 // Rendering with React
 $(() => {
-  var main = (
+  var view = (
     <Provider store={store}>
-      <GreetingC/>
+      <MainC/>
     </Provider>
   );
-  render(main, $('#content')[0])
-});
+  render(view, $('#content')[0])
 
-
-// Testing
-$.ajax("http://localhost:3000/api/article/Poland", {contentType: 'text'}).then((data) => {
-  $('#wiki').html(data);
+  store.dispatch(actions.loadEntry(store.getState().get('entry')));
 });
