@@ -6,7 +6,7 @@ import {reducePath} from './reduce-path';
 // This is the state our application starts in.
 const initialState = fromJS({
   riddle: {
-    path: ["Poland"],
+    path: [],
     pages: {}
   }
 });

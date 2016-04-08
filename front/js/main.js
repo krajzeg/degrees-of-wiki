@@ -31,13 +31,18 @@ const actions = _.extend({},
 
 // React
 import Page from './components/Page';
+import Path from './components/Path';
 import {riddle, currentPage} from './logic/selectors';
 class Main extends Component {
   render() {
-    const page = currentPage(riddle(this.props.state));
+    const state = this.props.state;
+    const page = currentPage(riddle(state));
+    const path = state.getIn(['riddle', 'path']);
+
     console.log(page);
     return (
       <div>
+        <Path path={path} goBackTo={this.props.goBackTo}/>
         {page ? <Page page={page} loadPage={this.props.loadPage} goTo={this.props.goTo}/> : null}
       </div>
     );
@@ -46,7 +51,7 @@ class Main extends Component {
 
 // React-Redux
 function mapStateToProps(state) {
-  return _.extend(state.toObject(), {state});
+  return {state}
 }
 var MainC = connect(mapStateToProps, actions)(Main);
 
