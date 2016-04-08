@@ -11,7 +11,7 @@ import Api from './api';
 const api = new Api(`${window.location.protocol}//${window.location.host}/api`);
 
 // Redux Store
-import mainReducer from './reducers/main-reducer';
+import mainReducer from './logic/main-reducer';
 import promiseMiddleware from './middleware/promise-middleware';
 let store = createStore(
   mainReducer,
@@ -23,17 +23,22 @@ let store = createStore(
 
 // Redux Actions
 import pageActions from './actions/page-actions';
+import pathActions from './actions/path-actions';
 const actions = _.extend({},
-  pageActions(api)
+  pageActions(api),
+  pathActions()
 );
 
 // React
 import Page from './components/Page';
+import {riddle, currentPage} from './logic/selectors';
 class Main extends Component {
   render() {
+    const page = currentPage(riddle(this.props.state));
+    console.log(page);
     return (
       <div>
-        {this.props.page ? <Page page={this.props.page} loadPage={this.props.loadPage} replacePage={this.props.replacePage}/> : null}
+        {page ? <Page page={page} loadPage={this.props.loadPage} goTo={this.props.goTo}/> : null}
       </div>
     );
   }
@@ -41,7 +46,7 @@ class Main extends Component {
 
 // React-Redux
 function mapStateToProps(state) {
-  return state.toObject();
+  return _.extend(state.toObject(), {state});
 }
 var MainC = connect(mapStateToProps, actions)(Main);
 
@@ -58,4 +63,5 @@ $(() => {
 // Startup
 $(() => {
   store.dispatch(actions.loadPage('Poland'));
+  store.dispatch(actions.goTo('Poland'));
 });

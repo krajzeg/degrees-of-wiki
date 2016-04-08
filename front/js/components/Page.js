@@ -8,16 +8,18 @@ export default class Page extends Component {
   }
 
   render() {
+    const page = this.props.page;
+    console.log(page);
     return (
       <div className="page">
-        <header>{this.props.page.get('title')}</header>
-        <div className="page-body" dangerouslySetInnerHTML={this.pageHTML()} onClick={this.handleClicks}/>
+        <header>{page.get('title')}</header>
+        <div className="page-body" dangerouslySetInnerHTML={this.pageHTML(page)} onClick={this.handleClicks}/>
       </div>
     );
   }
 
-  pageHTML() {
-    return {__html: this.props.page.get('html')};
+  pageHTML(page) {
+    return {__html: page.get('html')};
   }
 
   handleClicks(evt) {
@@ -27,7 +29,9 @@ export default class Page extends Component {
     if ($target.is('a[href^="page://"]')) {
       // It was - we trigger a Redux action to replace the page with a new one
       const targetPage = $target.attr('href').replace('page://', '');
+
       this.props.loadPage(targetPage);
+      this.props.goTo(targetPage);
 
       return false;
     }
