@@ -14,8 +14,7 @@ import Entry from './components/Entry'
 // Redux Store
 const initialState = fromJS({
   entry: {
-    title: "Poland",
-    html: "<b>Poland</b> is a country."
+    title: "Poland"
   }
 });
 
@@ -25,8 +24,9 @@ function reducer(state = initialState, action) {
     case 'ENTRY_LOAD_RESOLVED':
       return state.setIn(['entry', 'html'], action.result);
     case 'ENTRY_LOAD_FAILED':
-      console.error(action.error);
       return state;
+    case 'ENTRY_REPLACE':
+      return state.set('entry', fromJS({title: action.title}));
     default:
       return state;
   }
@@ -44,12 +44,15 @@ function loadHTMLFor(entryTitle) {
 }
 
 const actions = {
-  loadEntry(entry) {
+  loadEntry(title) {
     return {
       type: 'ENTRY_LOAD',
-      target: entry.get('title'),
-      promiseCall: () => loadHTMLFor(entry.get('title')),
+      target: title,
+      promiseCall: () => loadHTMLFor(title),
     }
+  },
+  replaceEntry(title) {
+    return {type: 'ENTRY_REPLACE', title};
   }
 };
 
@@ -58,7 +61,7 @@ class Main extends Component {
   render() {
     return (
       <div>
-        <Entry entry={this.props.entry}/>
+        <Entry entry={this.props.entry} loadEntry={this.props.loadEntry} replaceEntry={this.props.replaceEntry}/>
       </div>
     );
   }
@@ -79,5 +82,6 @@ $(() => {
   );
   render(view, $('#content')[0])
 
-  store.dispatch(actions.loadEntry(store.getState().get('entry')));
+  const initialTitle = store.getState().getIn(['entry', 'title']);
+  store.dispatch(actions.loadEntry(initialTitle));
 });
