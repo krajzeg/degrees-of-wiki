@@ -3,12 +3,12 @@ import {fromJS} from 'immutable';
 export const reducePage = action => page => {
   switch(action.type) {
     case 'PAGE_LOAD_STARTED':
-      return fromJS({title: action.title});
+      return fromJS({title: action.title, loading: true});
     case 'PAGE_LOAD_RESOLVED':
-      return addPropertiesBasedOnHTML(page, action.result);
+      return addPropertiesBasedOnHTML(page, action.result).merge({loading: false})
     case 'PAGE_LOAD_FAILED':
       console.error(action.error);
-      return page;
+      return page.merge({loading: false});
     default:
       return page;
   }

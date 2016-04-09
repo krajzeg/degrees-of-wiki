@@ -14,7 +14,7 @@ export default class Riddle extends Component {
       <div className='riddle'>
         <RiddleStatus riddle={this.props.riddle}/>
         <Path path={path} goBackTo={this.props.goBackTo}/>
-        {page ? <Page page={page} loadPage={this.props.loadPage} goTo={this.props.goTo}/> : null}
+        {page ? <Page page={page} goTo={this.props.goTo}/> : null}
       </div>
     );
   }

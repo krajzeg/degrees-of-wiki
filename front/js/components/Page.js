@@ -9,7 +9,6 @@ export default class Page extends Component {
 
   render() {
     const page = this.props.page;
-    console.log(page);
     return (
       <div className="page">
         <header>{page.get('title')}</header>
@@ -29,10 +28,7 @@ export default class Page extends Component {
     if ($target.is('a[href^="page://"]')) {
       // It was - we trigger a Redux action to replace the page with a new one
       const targetPage = $target.attr('href').replace('page://', '');
-
-      this.props.loadPage(targetPage);
       this.props.goTo(targetPage);
-
       return false;
     }
   }

@@ -24,21 +24,28 @@ let store = createStore(
 // Redux Actions
 import pageActions from './actions/page-actions';
 import pathActions from './actions/path-actions';
+import riddleActions from './actions/riddle-actions';
 const actions = _.extend({},
   pageActions(api),
-  pathActions()
+  pathActions(),
+  riddleActions()
 );
+
+// Triggering page load if the current page wasn't loaded yet
+import pageLoader from './subscribers/page-loader';
+store.subscribe(pageLoader(store, actions.loadPage.bind(actions)));
 
 // React
 import Riddle from './components/Riddle';
-import {riddle, currentPage} from './logic/selectors';
 class Main extends Component {
   render() {
-    const {state, goTo, goBackTo, loadPage} = this.props
+    const {state, goTo, goBackTo, loadPage} = this.props;
+    const currentRiddle = state.get('riddle');
     return (
-      <Riddle riddle={riddle(state)}
-        goTo={goTo} goBackTo={goBackTo} loadPage={loadPage}/>
-    )
+      <div>
+        { currentRiddle && <Riddle riddle={currentRiddle} goTo={goTo} goBackTo={goBackTo} loadPage={loadPage}/> }
+      </div>
+    );
   }
 }
 
@@ -60,6 +67,5 @@ $(() => {
 
 // Startup
 $(() => {
-  store.dispatch(actions.loadPage('Poland'));
-  store.dispatch(actions.goTo('Poland'));
+  store.dispatch(actions.initializeRiddle('Mother_Teresa', 'Game_of_Thrones'));
 });
