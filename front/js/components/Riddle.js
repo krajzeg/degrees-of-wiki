@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
-import {currentPage, score} from '../logic/selectors';
+import {currentPage, score, linksClicked} from '../logic/selectors';
+import {properTitle} from './helpers';
 import Path from './Path';
 import Page from './Page';
 
@@ -12,8 +13,10 @@ export default class Riddle extends Component {
 
     return (
       <div className='riddle'>
-        <RiddleStatus riddle={this.props.riddle}/>
-        <Path path={path} goBackTo={this.props.goBackTo}/>
+        <div className='riddle-bar'>
+          <RiddleStatus riddle={this.props.riddle}/>
+          <Path path={path} goBackTo={this.props.goBackTo}/>
+        </div>
         {page ? <Page page={page} goTo={this.props.goTo}/> : null}
       </div>
     );
@@ -23,13 +26,19 @@ export default class Riddle extends Component {
 class RiddleStatus extends Component {
   render() {
     const riddle = this.props.riddle,
-      riddleScore = score(this.props.riddle);
+      points = score(riddle),
+      links = linksClicked(riddle);
     const {start, goal} = riddle.toJS();
 
     return (
       <div className='riddle-status'>
-        <div className='goal'>Get from <b>{start}</b> to <b>{goal}</b> clicking as few links as possible!</div>
-        <div className='score'>Score: <span class='score-value'>{riddleScore}</span></div>
+        <div className='goal'>
+          Build a path from <strong>{properTitle(start)}</strong> to <strong>{properTitle(goal)}</strong>!
+        </div>
+        <div className='score'>
+          <div>Score: <strong>{points}</strong></div>
+          <div>Links: {links ? links : 'none yet'}</div>
+        </div>
       </div>
     );
   }

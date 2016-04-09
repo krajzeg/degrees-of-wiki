@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import React, { Component } from 'react';
+import {properTitle} from './helpers';
 
 export default class Page extends Component {
   constructor() {
@@ -9,9 +10,11 @@ export default class Page extends Component {
 
   render() {
     const page = this.props.page;
+    const title = page.get('title');
+
     return (
       <div className="page">
-        <header>{page.get('title')}</header>
+        <header className="page-title">{properTitle(title)}</header>
         <div className="page-body" dangerouslySetInnerHTML={this.pageHTML(page)} onClick={this.handleClicks}/>
       </div>
     );

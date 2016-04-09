@@ -13,6 +13,7 @@ export function score(riddle) {
 export function linksClicked(riddle) {
   return riddle.get('path').size - 1;
 }
+
 export function linksSeen(riddle) {
   const {path, start, goal} = riddle.toObject();
 

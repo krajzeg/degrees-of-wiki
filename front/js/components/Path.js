@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {properTitle} from './helpers';
 
 export default class Path extends Component {
   render() {
@@ -6,6 +7,7 @@ export default class Path extends Component {
     let pageLinks = path.toArray().map(page =>
       (<li><PathLink page={page} goBackTo={this.props.goBackTo}/></li>)
     );
+    pageLinks.push((<span>...?</span>));
     pageLinks = insertSeparator(pageLinks, (<li>→</li>))
 
     return (
@@ -19,7 +21,7 @@ class PathLink extends Component {
     const page = this.props.page;
 
     return (
-      <a href="goBackTo://{page}" onClick={() => this.props.goBackTo(page)}>{page}</a>
+      <a className="path-link" href="page://{page}" onClick={() => this.props.goBackTo(page)}>{properTitle(page)}</a>
     )
   }
 }
