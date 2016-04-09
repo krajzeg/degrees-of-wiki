@@ -30,22 +30,15 @@ const actions = _.extend({},
 );
 
 // React
-import Page from './components/Page';
-import Path from './components/Path';
+import Riddle from './components/Riddle';
 import {riddle, currentPage} from './logic/selectors';
 class Main extends Component {
   render() {
-    const state = this.props.state;
-    const page = currentPage(riddle(state));
-    const path = state.getIn(['riddle', 'path']);
-
-    console.log(page);
+    const {state, goTo, goBackTo, loadPage} = this.props
     return (
-      <div>
-        <Path path={path} goBackTo={this.props.goBackTo}/>
-        {page ? <Page page={page} loadPage={this.props.loadPage} goTo={this.props.goTo}/> : null}
-      </div>
-    );
+      <Riddle riddle={riddle(state)}
+        goTo={goTo} goBackTo={goBackTo} loadPage={loadPage}/>
+    )
   }
 }
 
