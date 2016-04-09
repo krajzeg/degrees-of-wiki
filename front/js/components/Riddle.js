@@ -24,10 +24,12 @@ class RiddleStatus extends Component {
   render() {
     const riddle = this.props.riddle,
       riddleScore = score(this.props.riddle);
+    const {start, goal} = riddle.toJS();
 
     return (
       <div className='riddle-status'>
-        Score: <b>{riddleScore}</b>
+        <div className='goal'>Get from <b>{start}</b> to <b>{goal}</b> clicking as few links as possible!</div>
+        <div className='score'>Score: <span class='score-value'>{riddleScore}</span></div>
       </div>
     );
   }
