@@ -14,7 +14,7 @@ export default function mainReducer(state = initialState, action) {
     return state.updateIn(['riddle', 'pages', action.title], reducePage(action));
   } else if (type.startsWith('PATH_')) {
     // These actions update the path in response to the user clicking links.
-    return state.updateIn(['riddle', 'path'], reducePath(action));
+    return state.updateIn(['riddle', 'path'], reducePath(state.get('riddle'))(action));
   } else if (type.startsWith('RIDDLE_')) {
     // These actions work with the whole riddle - to initialize it, usually.
     return state.updateIn(['riddle'], reduceRiddle(action));

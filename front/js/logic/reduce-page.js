@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import {fromJS} from 'immutable';
 
 export const reducePage = action => page => {
@@ -15,6 +16,13 @@ export const reducePage = action => page => {
 }
 
 function addPropertiesBasedOnHTML(page, html) {
-  const linkCount = (html.match(/<a /g) || []).length
-  return page.merge({html, linkCount});
+  var $html = $('<div></div>');
+  $html.html(html);
+
+  const pageLinks = $html.find('a[href^="page://"]').toArray();
+  const links = pageLinks.map(link =>
+    $(link).attr('href').replace('page://', '')
+  );
+
+  return page.merge({html, links});
 }

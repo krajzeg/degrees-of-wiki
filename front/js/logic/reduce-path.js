@@ -1,12 +1,14 @@
 import {fromJS} from 'immutable';
+import {linkCost} from '../logic/selectors';
 
-export const reducePath = action => path => {
+export const reducePath = riddle => action => path => {
   switch(action.type) {
     case 'PATH_GO_TO':
-      const {page, cost} = action;
+      const fromPage = path.get('pages').last(),
+        toPage = action.page;
       return path
-        .update('pages', pages => pages.push(page))
-        .update('costs', costs => costs.push(cost));
+        .update('pages', pages => pages.push(toPage))
+        .update('costs', costs => costs.push(linkCost(riddle, fromPage, toPage)));
 
     case 'PATH_GO_BACK_TO':
       // snip everything after a given entry

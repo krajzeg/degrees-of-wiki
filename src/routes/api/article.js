@@ -33,21 +33,8 @@ function wikipediaRoute(cfg) {
       .then(function(html) {
         let $ = cheerio.load(html);
         $ = cleanUpWikiContent($);
-        $ = scoreLinks($);
         return $.html($.root());
       });
-  }
-
-  function scoreLinks($) {
-    $('a').toArray().forEach((link, index) => {
-      let points = index+1;
-      if (points > 50) points = 50;
-      const category = Math.floor((points+4)/5);
-
-      $(link).attr('data-points', index+1).addClass(`c${category}`);
-    });
-
-    return $;
   }
 
   function cleanUpWikiContent($) {

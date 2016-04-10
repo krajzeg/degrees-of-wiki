@@ -15,3 +15,13 @@ export function score(riddle) {
 export function linksClicked(riddle) {
   return riddle.getIn(['path', 'costs']).size;
 }
+
+export function linkCost(riddle, fromPage, toPage) {
+  const page = riddle.getIn(['pages', fromPage]);
+  if (!page) return undefined;
+  const linkLocation = page.get('links').findEntry(p => p == toPage);
+  if (!linkLocation) return undefined;
+
+  const [index] = linkLocation;
+  return 10 + index;
+}
