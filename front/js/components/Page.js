@@ -1,11 +1,29 @@
 import $ from 'jquery';
 import React, { Component } from 'react';
 import {properTitle} from './helpers';
+import {linkCostByPosition} from '../logic/selectors';
 
 export default class Page extends Component {
   constructor() {
     super();
     this.handleClicks = this.handleClicks.bind(this);
+  }
+
+  componentDidUpdate() { this.updateBody(this.refs.body); }
+  componentDidRender() { this.updateBody(this.refs.body); }
+
+  updateBody(body) {
+    const $body = $(body);
+    $body.find('a[href^="page://"]').toArray().forEach((link, index) => {
+      let cost = linkCostByPosition(index);
+
+      let pointCategory = Math.floor(index / 10) + 1;
+      if (pointCategory > 10) pointCategory = 10;
+
+      $(link)
+        .addClass(`c${pointCategory}`)
+        .attr('title', `-${cost} points`);
+    });
   }
 
   render() {
@@ -15,7 +33,7 @@ export default class Page extends Component {
     return (
       <div className="page">
         <header className="page-title">{properTitle(title)}</header>
-        <div className="page-body" dangerouslySetInnerHTML={this.pageHTML(page)} onClick={this.handleClicks}/>
+        <div className="page-body" ref='body' dangerouslySetInnerHTML={this.pageHTML(page)} onClick={this.handleClicks}/>
       </div>
     );
   }

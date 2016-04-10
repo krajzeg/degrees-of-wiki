@@ -21,7 +21,7 @@ class PathLink extends Component {
     const page = this.props.page;
 
     return (
-      <a className="path-link" href="page://{page}" onClick={() => this.props.goBackTo(page)}>{properTitle(page)}</a>
+      <a className="path-link" href={`page://${page}`} onClick={() => this.props.goBackTo(page)}>{properTitle(page)}</a>
     )
   }
 }
