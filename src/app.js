@@ -1,22 +1,33 @@
-var express = require('express');
-var goodGuy = require('good-guy-http')();
-
-var onProduction = process.env.NODE_ENV == 'production';
+const express = require('express');
+const goodGuy = require('good-guy-http')();
+const path = require('path');
+const onProduction = process.env.NODE_ENV == 'production';
 
 // ==============================================================
 
-var app = express();
+let app = express();
 
+// view setup
+app.set('view engine', 'html');
+app.engine('html', require('consolidate').handlebars);
+
+// logging on development
 if (!onProduction) {
   app.use('*', require('morgan')('dev'));
 }
+
+// static files
+app.use('/dist', express.static("dist/"));
+
+// challenges
+app.use('/challenge', require('./routes/challenge')());
+app.get('/', (req, res) => res.redirect('/challenge/from/Mother_Teresa/to/Pikachu'));
+
+// API
 app.use('/api', require('./middleware/enable-cors')());
 app.use('/api/article', require('./routes/api/article')({goodGuy}));
 
-app.use('/', express.static("dist/"));
-app.use('/', express.static("front/"));
-
-// Error handler
+// catch-all error handling
 app.use('*', function(err, req, res, next) {
   if (!err) {
     err = {status: 404, message: "Not found."};

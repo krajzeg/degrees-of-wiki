@@ -65,7 +65,9 @@ $(() => {
   render(view, $('#content')[0])
 });
 
-// Startup
-$(() => {
-  store.dispatch(actions.initializeRiddle('Mother_Teresa', 'Game_of_Thrones'));
-});
+// Enable startup
+window.initializeRiddle = (from, to) => {
+  $(() => {
+    store.dispatch(actions.initializeRiddle(from, to));
+  });
+};
