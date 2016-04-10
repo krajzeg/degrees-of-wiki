@@ -31,6 +31,7 @@ app.use('*', function(err, req, res, next) {
     } else {
       res.send(err.stack || err);
     }
+    console.error("While handling " + req.url + ":\n", err.stack || err);
   }
 });
 

@@ -4,7 +4,7 @@ import {properTitle} from './helpers';
 export default class Path extends Component {
   render() {
     const path = this.props.path;
-    let pageLinks = path.toArray().map(page =>
+    let pageLinks = path.get('pages').toArray().map(page =>
       (<li><PathLink page={page} goBackTo={this.props.goBackTo}/></li>)
     );
     pageLinks.push((<span>...?</span>));

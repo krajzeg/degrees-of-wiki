@@ -31,10 +31,23 @@ function wikipediaRoute(cfg) {
   function fetchWikipediaContent(pageId) {
     return getWikipediaHTML(pageId)
       .then(function(html) {
-        var $ = cheerio.load(html);
+        let $ = cheerio.load(html);
         $ = cleanUpWikiContent($);
+        $ = scoreLinks($);
         return $.html($.root());
       });
+  }
+
+  function scoreLinks($) {
+    $('a').toArray().forEach((link, index) => {
+      let points = index+1;
+      if (points > 50) points = 50;
+      const category = Math.floor((points+4)/5);
+
+      $(link).attr('data-points', index+1).addClass(`c${category}`);
+    });
+
+    return $;
   }
 
   function cleanUpWikiContent($) {
@@ -99,7 +112,7 @@ function wikipediaRoute(cfg) {
       format: 'json',
       prop: 'text',
       page: pageId,
-      section: 0,
+      //section: 0,
       redirects: true,
       disabletoc: true
     });

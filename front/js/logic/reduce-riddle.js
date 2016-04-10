@@ -6,7 +6,10 @@ export const reduceRiddle = action => riddle => {
       const {start, goal} = action;
       return fromJS({
         start, goal,
-        path: [start],
+        path: {
+          pages: [start],
+          costs: []
+        },
         pages: {}
       });
 

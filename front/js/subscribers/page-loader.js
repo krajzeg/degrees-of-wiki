@@ -5,7 +5,7 @@ export default function(store, loadPage) {
     const state = store.getState();
 
     // determine what page is currently visible (if any)
-    const pageTitle = state.getIn(['riddle', 'path']).last(),
+    const pageTitle = state.getIn(['riddle', 'path', 'pages']).last(),
       pages = state.getIn(['riddle', 'pages']);
 
     if (pageTitle && !pages.has(pageTitle)) {
