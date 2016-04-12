@@ -65,6 +65,11 @@ $(() => {
   render(view, $('#content')[0])
 });
 
+// Fixed top content support
+import {keepContentInTheRightPlaces} from './look-and-feel/scrolling';
+$(window).scroll(keepContentInTheRightPlaces);
+$(window).resize(keepContentInTheRightPlaces);
+
 // Enable startup
 window.initializeRiddle = (from, to) => {
   $(() => {

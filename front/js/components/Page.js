@@ -56,8 +56,7 @@ export default class Page extends Component {
     if ($target.is('a[href^="page://"]')) {
       // It was - we trigger a Redux action to replace the page with a new one
       const targetPage = $target.attr('href').replace('page://', '');
-      const cost = parseInt($target.data('points'));
-      this.props.goTo(targetPage, cost);
+      this.props.goTo(targetPage);
       return false;
     }
   }

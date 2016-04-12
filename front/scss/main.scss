@@ -4,6 +4,9 @@
 @import "common/theme";
 @import "common/base";
 
+// Defines the "boxes" on the page where you can put things.
+@import "common/structure";
+
 // Common elements appearing within multiple components.
 @import "common/page-links";
 

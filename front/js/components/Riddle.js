@@ -15,12 +15,19 @@ export default class Riddle extends Component {
 
     return (
       <div className='riddle'>
-        <div className='riddle-bar'>
-          <RiddleStatus riddle={this.props.riddle}/>
-          <Path path={path} goBackTo={this.props.goBackTo}/>
+        <div className='fixed-top'>
+          <div>
+            <div className='riddle-bar'>
+              <RiddleStatus riddle={this.props.riddle}/>
+              <Path path={path} goBackTo={this.props.goBackTo}/>
+            </div>
+          </div>
         </div>
-        {riddleWon && <Win riddle={this.props.riddle}/>}
-        {page && <Page page={page} active={!riddleWon} goTo={this.props.goTo}/>}
+
+        <div className='main-content'>
+          {riddleWon && <Win riddle={this.props.riddle}/>}
+          {page && <Page page={page} active={!riddleWon} goTo={this.props.goTo}/>}
+        </div>
       </div>
     );
   }
