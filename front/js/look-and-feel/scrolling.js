@@ -12,3 +12,7 @@ export function keepContentInTheRightPlaces() {
     $('.main-content').css('top', 0);
   }
 }
+
+export function scrollToTop() {
+  window.scrollTo(0, 0);
+}

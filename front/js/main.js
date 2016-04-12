@@ -66,9 +66,12 @@ $(() => {
 });
 
 // Fixed top content support
-import {keepContentInTheRightPlaces} from './look-and-feel/scrolling';
+import {keepContentInTheRightPlaces, scrollToTop} from './look-and-feel/scrolling';
+import changeTrigger from './subscribers/change-trigger';
+
 $(window).scroll(keepContentInTheRightPlaces);
 $(window).resize(keepContentInTheRightPlaces);
+store.subscribe(changeTrigger(store, ['riddle', 'path'], scrollToTop));
 
 // Enable startup
 window.initializeRiddle = (from, to) => {

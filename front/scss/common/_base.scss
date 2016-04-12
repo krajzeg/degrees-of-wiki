@@ -1,4 +1,8 @@
 // Basic styling per tag-type.
+html {
+  overflow-y: scroll;
+}
+
 body {
   background: $background;
   color: $text-color;

@@ -13,7 +13,6 @@ export function won(riddle) {
 
 export function score(riddle) {
   const costs = riddle.getIn(['path', 'costs']);
-  console.log(costs.toJS());
   return 2000 - costs.reduce((sum, c) => sum + c, 0);
 }
 

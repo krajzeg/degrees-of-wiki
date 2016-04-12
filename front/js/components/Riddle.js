@@ -26,7 +26,7 @@ export default class Riddle extends Component {
 
         <div className='main-content'>
           {riddleWon && <Win riddle={this.props.riddle}/>}
-          {page && <Page page={page} active={!riddleWon} goTo={this.props.goTo}/>}
+          <Page page={page} active={!riddleWon} goTo={this.props.goTo}/>
         </div>
       </div>
     );
