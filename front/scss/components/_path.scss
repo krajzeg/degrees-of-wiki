@@ -1,0 +1,21 @@
+// The path used by the user to get where he/she is.
+ul.path {
+  list-style: none;
+  margin: 0 0 1em;
+  padding: 0;
+  line-height: 150%;
+
+  li {
+    display: inline-block;
+    padding: 0;
+    padding-right: 0.25em;
+  }
+
+  a.path-link {
+    background: white;
+    padding: 0 0.3em;
+    border-bottom: 1px solid black;
+
+    &:hover { background: #cef; color: #006; }
+  }
+}

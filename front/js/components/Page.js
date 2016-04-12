@@ -23,11 +23,11 @@ export default class Page extends Component {
       } else {
         let cost = linkCostByPosition(index);
 
-        let pointCategory = Math.floor(index / 10) + 1;
-        if (pointCategory > 10) pointCategory = 10;
+        let pointCategory = Math.ceil((cost+1) / 20) * 20;
+        let categoryName = (pointCategory <= 100) ? `up-to-${pointCategory}` : 'more-than-100';
 
         $link
-          .addClass(`c${pointCategory}`)
+          .addClass(categoryName)
           .attr('title', `-${cost} points`);
       }
     });

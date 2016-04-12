@@ -1,94 +1,14 @@
 @import "~normalize.css/normalize.css";
-@import "link-colors";
 
-body {
-  background: #eef;
-  color: #444030;
-  font-family: "PT Sans", Helvetica Neue, Helvetica, Arial;
-  font-size: 1.2rem;
-}
+// Colors, fonts and base styling for each type of tag.
+@import "common/theme";
+@import "common/base";
 
-#content {
-  margin: 1em;
-}
+// Common elements appearing within multiple components.
+@import "common/page-links";
 
-
-ul.path {
-  list-style: none;
-  margin: 0 0 1em;
-  padding: 0;
-
-  li {
-    display: inline-block;
-    padding: 0;
-    padding-right: 0.25em;
-  }
-}
-
-.win {
-  background: white;
-  text-align: center;
-}
-
-.riddle {
-  max-width: 720px;
-  margin: auto;
-
-  .riddle-bar {
-    background: #335;
-    color: #8ac;
-
-    padding: 1em;
-    margin: 1em -1em;
-    border-radius: 0.5em;
-
-    .riddle-status {
-      display: flex;
-      justify-content: space-between;
-
-      strong { color: white; font-weight: bold; }
-      .goal {}
-      .score {
-        text-align: right;
-      }
-    }
-    .path {
-      margin: 0.75em 0 0 0;
-      line-height: 150%;
-
-      a.path-link {
-        background: white;
-        padding: 0 0.3em;
-        border-bottom: 1px solid black;
-
-        &:hover { background: #cef; color: #006; }
-      }
-    }
-  }
-
-  header.page-title {
-    font-weight: bold;
-    font-size: 200%;
-  }
-
-  .page-body {
-    line-height: 130%;
-  }
-
-  a[href^="page://"] {
-    display: inline-block;
-    text-decoration: none;
-    font-size: 90%;
-    padding: 0 0.2em;
-    margin-left: -0.1em;
-    margin-right: -0.1em;
-    transition: all 0.15s ease-out;
-    border-radius: 0.5em;
-    box-shadow: inset 0 -0.4em 0.4em 0 rgba(0,0,0, 0.1), 1px 1px 0 0 rgba(0,0,0,0.3);
-
-    &:hover {
-      background: #333;
-      color: white;
-    }
-  }
-}
+// One partial per React component with it's private styles.
+@import "components/riddle";
+@import "components/path";
+@import "components/page";
+@import "components/win";

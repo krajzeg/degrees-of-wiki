@@ -1,0 +1,11 @@
+// A container in which the Wikipedia pages are displayed.
+.page {
+  header.page-title {
+    font-weight: bold;
+    font-size: 200%;
+  }
+
+  .page-body {
+    line-height: 130%;
+  }
+}

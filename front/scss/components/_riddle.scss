@@ -1,0 +1,24 @@
+.riddle {
+  max-width: 720px;
+  margin: auto;
+
+  .riddle-bar {
+    background: #335;
+    color: #8ac;
+
+    padding: 1em;
+    margin: 1em -1em;
+    border-radius: 0.5em;
+
+    .riddle-status {
+      display: flex;
+      justify-content: space-between;
+
+      strong { color: white; font-weight: bold; }
+      .goal {}
+      .score {
+        text-align: right;
+      }
+    }
+  }
+}
