@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 
-import {currentPage, score, linksClicked} from '../logic/selectors';
+import {currentPage, score, linksClicked, won} from '../logic/selectors';
 import {properTitle} from './helpers';
 import Path from './Path';
 import Page from './Page';
+import Win from './Win';
 
 export default class Riddle extends Component {
   render() {
     const riddle = this.props.riddle,
       path = riddle.get('path'),
-      page = currentPage(riddle);
+      page = currentPage(riddle),
+      riddleWon = won(riddle);
 
     return (
       <div className='riddle'>
@@ -17,7 +19,8 @@ export default class Riddle extends Component {
           <RiddleStatus riddle={this.props.riddle}/>
           <Path path={path} goBackTo={this.props.goBackTo}/>
         </div>
-        {page ? <Page page={page} goTo={this.props.goTo}/> : null}
+        {riddleWon && <Win riddle={this.props.riddle}/>}
+        {page && <Page page={page} active={!riddleWon} goTo={this.props.goTo}/>}
       </div>
     );
   }

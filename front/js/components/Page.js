@@ -13,16 +13,23 @@ export default class Page extends Component {
   componentDidRender() { this.updateBody(this.refs.body); }
 
   updateBody(body) {
-    const $body = $(body);
+    const $body = $(body), active = this.props.active;
     $body.find('a[href^="page://"]').toArray().forEach((link, index) => {
-      let cost = linkCostByPosition(index);
+      const $link = $(link);
+      if (!active) {
+        // this page is inactive - the game was already won, no further
+        // links can be followed
+        return $link.replaceWith(`<span>${$link.text()}</span>`);
+      } else {
+        let cost = linkCostByPosition(index);
 
-      let pointCategory = Math.floor(index / 10) + 1;
-      if (pointCategory > 10) pointCategory = 10;
+        let pointCategory = Math.floor(index / 10) + 1;
+        if (pointCategory > 10) pointCategory = 10;
 
-      $(link)
-        .addClass(`c${pointCategory}`)
-        .attr('title', `-${cost} points`);
+        $link
+          .addClass(`c${pointCategory}`)
+          .attr('title', `-${cost} points`);
+      }
     });
   }
 

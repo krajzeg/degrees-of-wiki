@@ -6,6 +6,11 @@ export function currentPage(riddle) {
   return riddle.getIn(['pages', lastPage]);
 }
 
+export function won(riddle) {
+  const lastPage = riddle.getIn(['path', 'pages']).last();
+  return lastPage == riddle.get('goal');
+}
+
 export function score(riddle) {
   const costs = riddle.getIn(['path', 'costs']);
   console.log(costs.toJS());
