@@ -1,0 +1,28 @@
+%pop-box {
+  padding: 1em;
+  margin: 1em -1em;
+  border-radius: 0.5em;
+}
+
+%dark-box {
+  @extend %pop-box;
+
+  background: $dark-back;
+  color: $dark-text-color;
+  strong {
+    color: $dark-highlight-color;
+  }
+}
+
+%light-box {
+  @extend %pop-box;
+
+  background: $light-back;
+  color: $light-text-color;
+  border: 1px solid #ccf;
+  box-shadow: 0 2px 7px 1px rgba(0,0,0,0.1);
+
+  strong {
+    color: $light-highlight-color;
+  }
+}

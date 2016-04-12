@@ -4,16 +4,17 @@ $zTopContent: 10;
   position: relative;
   padding: 0;
   width: 100%;
+  z-index: $zTopContent;
+  background: $background;
+  
+  &.is-glued-to-top {
+    position: fixed;
+    top: 0; left: 0;
+  }
 
   > div {
     width: $main-width;
     margin: 0 auto;
-  }
-
-  &.is-glued-to-top {
-    position: fixed;
-    top: 0; left: 0;
-    z-index: $zTopContent;
   }
 }
 

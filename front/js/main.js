@@ -13,7 +13,7 @@ const api = new Api(`${window.location.protocol}//${window.location.host}/api`);
 // Redux Store
 import mainReducer from './logic/main-reducer';
 import promiseMiddleware from './middleware/promise-middleware';
-let store = createStore(
+let store = window.store = createStore(
   mainReducer,
   compose(
     applyMiddleware(promiseMiddleware),
@@ -25,7 +25,7 @@ let store = createStore(
 import pageActions from './actions/page-actions';
 import pathActions from './actions/path-actions';
 import riddleActions from './actions/riddle-actions';
-const actions = _.extend({},
+const actions = window.actions = _.extend({},
   pageActions(api),
   pathActions(),
   riddleActions()

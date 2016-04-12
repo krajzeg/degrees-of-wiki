@@ -7,6 +7,9 @@
 // Defines the "boxes" on the page where you can put things.
 @import "common/structure";
 
+// Base definitions extended by others.
+@import "common/boxes";
+
 // Common elements appearing within multiple components.
 @import "common/page-links";
 

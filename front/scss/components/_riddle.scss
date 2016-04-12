@@ -1,10 +1,5 @@
 .riddle-bar {
-  background: #335;
-  color: #8ac;
-
-  padding: 1em;
-  margin: 1em -1em;
-  border-radius: 0.5em;
+  @extend %dark-box;
 
   .riddle-status {
     display: flex;

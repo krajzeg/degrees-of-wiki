@@ -1,5 +1,5 @@
 // The "you won" box.
 .win {
-  background: white;
+  @extend %light-box;
   text-align: center;
 }
