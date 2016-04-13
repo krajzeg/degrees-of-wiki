@@ -11,13 +11,16 @@ let app = express();
 app.set('view engine', 'html');
 app.engine('html', require('consolidate').handlebars);
 
-// logging on development
+// development stuff
 if (!onProduction) {
+  // logging
   app.use('*', require('morgan')('dev'));
+  // webpack compilation/hot reload
+  app.use(require('./middleware/webpack')());
+} else {
+  // static files
+  app.use('/dist', express.static("dist/"));
 }
-
-// static files
-app.use('/dist', express.static("dist/"));
 
 // challenges
 app.use('/challenge', require('./routes/challenge')());
