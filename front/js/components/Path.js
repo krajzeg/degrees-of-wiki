@@ -7,7 +7,10 @@ export default class Path extends Component {
     let pageLinks = path.get('pages').toArray().map(page =>
       (<li><PathLink page={page} goBackTo={this.props.goBackTo}/></li>)
     );
-    pageLinks.push((<span>...?</span>));
+    if (!this.props.won) {
+      pageLinks.push((<span>...?</span>));
+    }
+
     pageLinks = insertSeparator(pageLinks, (<li>→</li>))
 
     return (

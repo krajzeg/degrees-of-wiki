@@ -19,7 +19,7 @@ export default class Riddle extends Component {
           <div>
             <div className='riddle-bar'>
               <RiddleStatus riddle={this.props.riddle}/>
-              <Path path={path} goBackTo={this.props.goBackTo}/>
+              <Path path={path} won={riddleWon} goBackTo={this.props.goBackTo}/>
             </div>
           </div>
         </div>
