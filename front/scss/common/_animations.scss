@@ -1,0 +1,37 @@
+// A mixin that creates a set of ReactCSSTransitionGroup-compatible
+// classes from a before/after state.
+@mixin react-animation($name, $transition) {
+  .#{$name}-enter {
+    @extend %#{$name}-before;
+    &.#{$name}-enter-active {
+      @extend %#{$name}-after;
+      transition: $transition;
+    }
+  }
+  .#{$name}-leave {
+    @extend %#{$name}-after;
+    &.#{$name}-leave-active {
+      @extend %#{$name}-before;
+      transition: $transition;
+    }
+  }
+}
+
+// Horizontal expand/collapse.
+%a-expand-before, %a-expand-after {
+  transform-origin: left;
+}
+%a-expand-before {
+  transform: scaleX(0.001);
+  opacity: 0.01;
+}
+%a-expand-after {
+  transform: scaleX(1);
+  opacity: 1;
+}
+@include react-animation('a-expand', all 0.2s ease-out);
+
+// Fade in/out
+%a-fade-before { opacity: 0.01; }
+%a-fade-after { opacity: 1; }
+@include react-animation('a-fade', all 0.3s ease-out);

@@ -10,6 +10,9 @@
 // Base definitions extended by others.
 @import "common/boxes";
 
+// Animations that can be used with any component
+@import "common/animations";
+
 // Common elements appearing within multiple components.
 @import "common/page-links";
 
