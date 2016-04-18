@@ -1,5 +1,7 @@
 import $ from 'jquery';
 import React, { Component } from 'react';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+
 import {properTitle} from './helpers';
 import {linkCostByPosition} from '../logic/selectors';
 
@@ -38,10 +40,11 @@ export default class Page extends Component {
     const title = page.get('title');
 
     return (
-      <div className="page">
-        <header className="page-title">{properTitle(title)}</header>
-        <div className="page-body" ref='body' dangerouslySetInnerHTML={this.pageHTML(page)} onClick={this.handleClicks}/>
-      </div>
+      <ReactCSSTransitionGroup component="div" className="page"
+        transitionName="a-fade" transitionEnterTimeout={300} transitionLeave={false}>
+        <header key={title} className="page-title">{properTitle(title)}</header>
+        {page.get('html') && <div className="page-body" key="contents" ref='body' dangerouslySetInnerHTML={this.pageHTML(page)} onClick={this.handleClicks}/>}
+      </ReactCSSTransitionGroup>
     );
   }
 
